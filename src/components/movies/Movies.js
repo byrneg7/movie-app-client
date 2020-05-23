@@ -13,6 +13,7 @@ const Movies = () => {
 
     const renderMovies = () => movies.map(movie =>
         <div>
+            Movies
             <div className='my-5'>
                 {movie.title}
             </div>
