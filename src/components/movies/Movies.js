@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import {apiClient} from "../../services/axiosConfig";
 
 const Movies = () => {
     const [movies, setMovies] = useState([]);
 
     useEffect(() => {
-            axios.get('https://intense-temple-41794.herokuapp.com/api/v1/movies')
+            apiClient.get('/movies')
                 .then(res => setMovies(res.data))
                 .catch(err => console.log(err))
         }, []
