@@ -1,13 +1,16 @@
 import React from 'react';
 
-import {Row} from "react-bootstrap";
-import Movies from "./movies/Movies";
+import LandingNav from "./nav/LandingNav";
+import Router from "../routes/router";
+import Footer from "./footer/Footer";
 
 function App() {
     return (
-        <div className="container">
-            <Movies/>
-        </div>
+        <>
+            <LandingNav/>
+            <Router/>
+            <Footer/>
+        </>
     );
 }
 
