@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import LandingNav from "./nav/LandingNav";
 import Router from "../routes/router";
 import Footer from "./footer/Footer";
+import SignUpModal from "./auth/SignUpModal";
 
 function App() {
     return (
@@ -14,6 +15,8 @@ function App() {
             <LandingNav/>
             <Router/>
             <Footer/>
+
+            <SignUpModal/>
         </>
     );
 }
