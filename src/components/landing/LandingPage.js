@@ -27,7 +27,7 @@ const LandingPage = ({history}) => {
     const isValid = () => chatroomName.length > 6;
 
     const createChatroom = () => {
-        apiClient.post('/chatrooms', {name: chatroomName})
+        apiClient.post('api/v1/chatrooms', {name: chatroomName})
             .then(res => {
                 if (res && res.data) {
                     console.log(res.data.data.id)
