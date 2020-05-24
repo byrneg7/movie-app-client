@@ -12,9 +12,7 @@ const Banner = ({title, body}) => {
                         <h1 className="mb-5">{title}</h1>
                     </div>
                     <div className="col-md-10 col-lg-8 col-xl-7 mx-auto">
-                        <form>
-                            {body}
-                        </form>
+                        {body}
                     </div>
                 </div>
             </div>
