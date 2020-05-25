@@ -4,9 +4,10 @@ import {Field, reduxForm} from "redux-form";
 import {Button, Col, Form} from "react-bootstrap";
 
 import GenericModal from "../services/GenericModal";
-import {TOGGLE_MODAL_ON} from "../../reducers/types";
+import {TOGGLE_MODAL_OFF, TOGGLE_MODAL_ON} from "../../reducers/types";
 import FormField from "../services/FormField";
 import {emailRegex, REGISTER_FORM_FIELDS} from "../../assets/constants";
+import {apiClient} from "../../services/axiosConfig";
 
 
 const SignUpModal = ({handleSubmit, reset}) => {
@@ -32,9 +33,17 @@ const SignUpModal = ({handleSubmit, reset}) => {
         </Form>
     );
 
-    const onSubmit = (formValues) => {
-        console.log(formValues);
-        reset()
+    const onSubmit = ({email, password, password_confirmation}) => {
+        const user = {user: {email, password, password_confirmation}};
+        apiClient.post('/users', user, {withCredentials: true})
+            .then(res => {
+                console.log(res);
+            })
+            .catch(e => console.log(e))
+            .finally(() => {
+                reset();
+                dispatch({type: TOGGLE_MODAL_OFF})
+            })
     };
 
     return <GenericModal title='Sign up' body={bodyContent()} footer='footer content' name='signup'/>
