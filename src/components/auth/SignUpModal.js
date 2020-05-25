@@ -1,68 +1,66 @@
-import React, { useState } from 'react'
-import { useDispatch } from "react-redux";
+import React from 'react'
+import {useDispatch} from "react-redux";
+import {Field, reduxForm} from "redux-form";
+import {Button, Col, Form} from "react-bootstrap";
 
 import GenericModal from "../services/GenericModal";
-import { TOGGLE_MODAL_ON } from "../../reducers/types";
-import { Button, Col, Form, InputGroup } from "react-bootstrap";
+import {TOGGLE_MODAL_ON} from "../../reducers/types";
+import FormField from "../services/FormField";
+import {emailRegex, REGISTER_FORM_FIELDS} from "../../assets/constants";
 
-const SignUpModal = () => {
-  const dispatch = useDispatch();
-  const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-      alert('invalid')
-    }
-    setValidated(true);
-    alert('valid')
-  };
+const SignUpModal = ({handleSubmit, reset}) => {
+    const dispatch = useDispatch();
 
-  const renderFields = () => {
-    return (
-      <Form.Group as={Col} controlId="validationCustomUsername">
-        <Form.Label>Username</Form.Label>
-        <InputGroup>
-          <Form.Control
-            type="email"
-            placeholder="Email address..."
-            aria-describedby="inputGroupPrepend"
-            minLength={5}
-            required
-          />
-          <InputGroup.Append>
-            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-          </InputGroup.Append>
-          <Form.Control.Feedback type="valid">Looks good!</Form.Control.Feedback>
-          <Form.Control.Feedback type="invalid">
-            Please use a valid email address.
-          </Form.Control.Feedback>
-        </InputGroup>
-      </Form.Group>
-    )
-  };
+    const renderFields = () => REGISTER_FORM_FIELDS.map(({label, name, placeholder, type}) => (
+        <Field key={name} component={FormField} type={type} label={label} name={name} placeholder={placeholder}/>
+    ));
 
-  const bodyContent = () => {
-    return (
-      <>
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          {renderFields()}
-          <Button type="submit">Submit form</Button>
+    const bodyContent = () => (
+        <Form onSubmit={handleSubmit(onSubmit)}>
+            <Col xs="12">
+                {renderFields()}
+            </Col>
+            <Button type="submit">Submit form</Button>
+
+            <div>
+                Already have an account?
+                <a href='#' onClick={() => dispatch({type: TOGGLE_MODAL_ON, payload: 'signin'})}>
+                    Sign in
+                </a>
+            </div>
         </Form>
+    );
 
-        <div>
-          Already have an account?
-          <a href='#' onClick={() => dispatch({type: TOGGLE_MODAL_ON, payload: 'signin'})}>
-            Sign in
-          </a>
-        </div>
-      </>
-    )
-  };
+    const onSubmit = (formValues) => {
+        console.log(formValues);
+        reset()
+    };
 
-  return <GenericModal title='Sign up' body={bodyContent()} footer='footer content' name='signup'/>
+    return <GenericModal title='Sign up' body={bodyContent()} footer='footer content' name='signup'/>
 };
 
-export default SignUpModal;
+function validate(values) {
+    const errors = {};
+    REGISTER_FORM_FIELDS.forEach(field => {
+
+        if (!values[field.name]) {
+            errors[field.name] = 'You must provide a value.'
+        }
+
+        if (field.name === 'password_confirmation') {
+            if (values[field.name] !== values['password']) {
+                errors[field.name] = 'Confirmation does not match password.'
+            }
+        }
+
+        if (field.name === 'email') {
+            if (!emailRegex.test(values[field.name])) {
+                errors[field.name] = 'Must be a valid email address.'
+            }
+        }
+    });
+    return errors;
+}
+
+export default reduxForm({validate, form: 'signupForm', destroyOnUnmount: false})(SignUpModal);
